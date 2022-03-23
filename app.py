@@ -30,7 +30,7 @@ class Tweet(db.Model):
 @app.route("/")
 def home():
     # past 1 hour tweets
-    past_hour = datetime.now() - timedelta(hours= 1)
+    past_hour = datetime.now() - timedelta(hours= 2)
     #print("past hour {}".format(past_hour))
     tweets = Tweet.query.filter(Tweet.date >= past_hour).all()
     return render_template("base.html", tweetList=tweets)
