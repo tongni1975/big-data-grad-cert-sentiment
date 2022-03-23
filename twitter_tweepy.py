@@ -47,7 +47,7 @@ def get_tweets():
 
    # output to file name
    name = time.strftime('tweets_%d%m%Y_%H_%M.csv')
-   pd.DataFrame(data=twits, columns=twitter_fields).to_csv(name)
+   pd.DataFrame(data=twits, columns=twitter_fields).to_csv('input/{}'.format(name))
    #pd.DataFrame(data=twits, columns=twitter_fields).to_csv('tweets_{}.csv', time.strftime("%Y%m%d-%H%M%S"))
 
 

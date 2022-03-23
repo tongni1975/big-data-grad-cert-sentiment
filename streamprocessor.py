@@ -1,11 +1,8 @@
-from cmath import nan
-from optparse import Values
 import random
 import re
 from struct import Struct
 import numpy as np
 import pandas as pd
-from more_itertools import value_chain
 #from pandas import StringDtype
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import functions as F
@@ -33,15 +30,9 @@ import threading
 
 from streamlit.script_run_context import add_script_run_ctx
 
-from flask import Flask
-from flask import request
+import requests
 
-tone_dist = nan
-
-def plotDf():
-    st.bar_chart(tone_dist.select("count").toPandas())
-
-thread = threading.Thread(target=plotDf)
+thread = threading.Thread()
 st.script_run_context.add_script_run_ctx(thread) 
 #thread.start()
 
@@ -61,7 +52,7 @@ def preprocessing(df):
     return df
 
 def cleanTxt(text):
- text = re.sub('@[A-Za-z0–9]+', '', text) #Removing @mentions
+ text = re.sub('@[A-Za-z0-9]+', '', text) #Removing @mentions
  text = re.sub('#', '', text) # Removing '#' hash tag
  text = re.sub('RT[\s]+', '', text) # Removing RT
  text = re.sub('https?:\/\/\S+', '', text) # Removing hyperlink
@@ -107,11 +98,12 @@ def calc_move(df):
 
     return move
 
-svr_add = "http://127.0.0.1:5000"
+svr_add = "http://127.0.0.1:5000/ping"
 
 def ping(msg):
-    #print(msg)
-    request.get(url = svr_add, params = "/ping?{}".format(msg))
+    print(msg)
+    requests.post(svr_add, json=msg)
+    #requests.get(svr_add, params=msg)
 
 # perform structured streaming (from excel)
 # specify schema
@@ -129,7 +121,7 @@ tweets = sparkSession.readStream.format("csv").schema(twSchema) \
 tweets.isStreaming
 
 
-# test local df with streamit
+# TBR test local df with streamit
 data = [{"Pos": 11},
         {"Neg": 3},
         {"Neu": 16}]
@@ -186,13 +178,17 @@ def write_ext_stat(df, epochId):
     #tone_dist = tone_dist.withColumn("movement", calc_move(tone_dist))
 
     # TODO broadcast to webserver
-    #ping(tone_dist.toJSON().collect())
-    tone_dist.show()
-    #st.bar_chart(tone_dist.select("count").toPandas()
-    thread.start()
+    ping(tone_dist.toJSON().collect())
+    #tone_dist.show()
 
     # merge data from all partitions
     df.coalesce(1).write.mode("append").json("hour_sentiment")
     df.coalesce(1).write.mode("append").csv("hour_sentiment")
 
-query = cur_sentiment.writeStream.foreachBatch(write_ext_stat).start().awaitTermination()
+def processRow(row):
+    # row to json
+    ping(row.asDict())
+
+
+#query = cur_sentiment.writeStream.foreachBatch(write_ext_stat).start().awaitTermination()
+query = cur_sentiment.writeStream.foreach(processRow).start().awaitTermination()
