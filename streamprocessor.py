@@ -61,6 +61,7 @@ def cleanTxt(text):
 
 # using textblob for sentiment
 def senti_scoring(text):
+    #return f'{TextBlob(text).sentiment.polarity:.2f}'
     return TextBlob(text).sentiment.polarity
 
 def subjectivity_detection(text):
@@ -112,7 +113,7 @@ twSchema = StructType([StructField('', IntegerType(), True),
                        StructField('id', StringType(), True),
                        StructField('text', StringType(), True),
                        StructField('author_id', StringType(), True),
-                       StructField('created_at', DateType(), True),
+                       StructField('created_at', TimestampType(), True),
                        StructField('geo', StringType(), True)])
 
 tweets = sparkSession.readStream.format("csv").schema(twSchema) \
@@ -133,7 +134,7 @@ pdDf = tempDf.select("*").toPandas()
 st.bar_chart(pdDf)
 
 # define ML pipeline: clean out RT
-tweets = tweets.select("author_id", "text", date_format(tweets.created_at, "yyyy-MM-dd hh").alias("date"))
+tweets = tweets.select("author_id", "text", date_format(tweets.created_at, "yyyy-MM-dd HH:mm:ss").alias("date"))
 tweets.createOrReplaceTempView("tweets_snapshot")
 #sparkSession.sql("select * from tweets_snapshot").show(10)
 
