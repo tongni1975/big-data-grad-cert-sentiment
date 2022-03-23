@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <script src="https://kit.fontawesome.com/db1eb2790b.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <!-- highchart for plot -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -18,40 +19,46 @@
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
 </head>
 <script>
-    Highcharts.chart('container', {
-    chart: {
-        type: 'scatter',
-        zoomType: 'xy'
-    },
-    title: {
-        text: 'Height Versus Weight of 507 Individuals by Gender'
-    },
-    subtitle: {
-        text: 'Source: Heinz  2003'
-    },
-    xAxis: {
-        title: {
-            enabled: true,
-            text: 'Height (cm)'
-        },
-        startOnTick: true,
-        endOnTick: true,
-        showLastLabel: true
-    },
-    yAxis: {
-        title: {
-            text: 'Weight (kg)'
-        }
-    },
-    series: [{
-        name: 'Female',
-        color: 'rgba(223, 83, 83, .5)',
-        data: [[161.2, 51.6], [167.5, 59.0]]},
-        {
-        name: 'Male',
-        color: 'rgba(119, 152, 191, .5)',
-        data: [[174.0, 65.6], [175.3, 71.8]]}]
-    });
+    function load_chart() {
+
+        const chart = Highcharts.chart('container', {
+            chart: {
+                type: 'scatter',
+                zoomType: 'xy'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    enabled: true,
+                    text: 'Timestamp'
+                },
+                startOnTick: true,
+                endOnTick: true,
+                showLastLabel: true
+            },
+            yAxis: {
+                title: {
+                    text: 'Sentiment Score'
+                }
+            },
+            series: [{
+                name: 'Positive',
+                color: 'rgba(223, 83, 83, .5)',
+                data: [[161.2, 51.6], [167.5, 59.0]]
+            },
+            {
+                name: 'Negative',
+                color: 'rgba(119, 152, 191, .5)',
+                data: [[174.0, 65.6], [175.3, 71.8]]
+            }]
+        });
+    }
+
 </script>
 
 <body>
@@ -73,25 +80,26 @@
             <label>{{tweet.date}} </label>
             <p class="ui">{{tweet.text }}</p>
             {% if tweet.tone == 'Positive' %}
-                <p class="ui green label">{{tweet.tone}}</p>
-                <p class="ui gray label">{{ tweet.sentiment_score }}</p>
+            <p class="ui green label">{{tweet.tone}}</p>
+            <p class="ui gray label">{{ tweet.sentiment_score }}</p>
             {% elif tweet.tone == 'Negative' %}
-                <p class="ui orange label">{{tweet.tone}}</p>
-                <p class="ui gray label">{{ tweet.sentiment_score }}</p>
+            <p class="ui orange label">{{tweet.tone}}</p>
+            <p class="ui gray label">{{ tweet.sentiment_score }}</p>
             {% else %}
-                <p class="ui grey label">{{tweet.tone}}</p>
+            <p class="ui grey label">{{tweet.tone}}</p>
             {% endif %}
         </div>
         {% endfor %}
 
         <h2 class="ui dividing header">Sentiment Plot</h2>
+        <button class="ui primary button" onclick="load_chart()">
+            Plot Sentiment
+        </button>
         <figure class="highcharts-figure">
             <div id="container"></div>
-            <p class="highcharts-description">
-                Sentiment Plot
-            </p>
+
         </figure>
-        
+
     </div>
 </body>
 
