@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
+    <title>CryptoAnalytics</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
@@ -17,13 +17,10 @@
 
         {% for tweet in tweetList %}
         <div class="ui segment">
-            <p class="ui big header">{{tweet.text }} | {{ tweet.sentiment }}</p>
-
-            <!-- {% if todo.complete == False %}
-            <span class="ui gray label">Not Complete</span>
-            {% else %}
-            <span class="ui green label">Completed</span>
-            {% endif %} -->
+            <!-- touch on the color based on the tone -->
+            <!-- if tweet.tone == "Positive" -->
+            <p class="ui">{{tweet.text }}</p>
+            <p class="ui big header"><label>{{tweet.tone}} {{ tweet.sentiment_score }} </label></p>
         </div>
         {% endfor %}
     </div>
