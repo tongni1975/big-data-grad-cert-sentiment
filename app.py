@@ -34,7 +34,7 @@ class Tweet(db.Model):
 @app.route("/")
 def home():
     # past 1 hour tweets
-    past_hour = datetime.now() - timedelta(hours=7)
+    past_hour = datetime.now() - timedelta(hours=8)
     #print("past hour {}".format(past_hour))
     tweets = Tweet.query.filter(
         Tweet.date >= past_hour).order_by(Tweet.date.desc()).all()
@@ -44,11 +44,11 @@ def home():
 
     negative_tweets_for_plot = Tweet.query.with_entities(Tweet.date, Tweet.sentiment_score).filter(
         Tweet.date >= past_hour, Tweet.tone == 'Negative').order_by(Tweet.date.desc()).all()
-    
-    print(positive_tweets_for_plot)
-    print(json.dumps(positive_tweets_for_plot))
 
-    return render_template("base.html", tweetList=tweets, posTweets=json.dumps(positive_tweets_for_plot), negTweets=negative_tweets_for_plot)
+    # print(positive_tweets_for_plot)
+    # print(json.dumps(positive_tweets_for_plot))
+
+    return render_template("base.html", tweetList=tweets, posTweets=positive_tweets_for_plot, negTweets=negative_tweets_for_plot)
 
 
 @app.route("/ping", methods=['POST', 'GET'])
