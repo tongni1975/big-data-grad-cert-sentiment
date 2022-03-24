@@ -35,7 +35,8 @@ def home():
     # past 1 hour tweets
     past_hour = datetime.now() - timedelta(hours=3)
     #print("past hour {}".format(past_hour))
-    tweets = Tweet.query.filter(Tweet.date >= past_hour).all()
+    tweets = Tweet.query.filter(
+        Tweet.date >= past_hour).order_by(Tweet.date.desc()).all()
     return render_template("base.html", tweetList=tweets)
 
 
