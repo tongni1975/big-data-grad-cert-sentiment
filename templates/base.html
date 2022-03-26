@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="cache-control" content="max-age=604800, stale-while-revalidate=86400" />
+
     <title>CryptoAnalytics</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
@@ -19,14 +21,15 @@
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
 </head>
 <script>
-    function load_chart() {
+    function load_scatter() {
+        // scatter plot | pie or barchart | bitcoin chart?
         neg_tweet = '{{negTweets}}'
 
         console.log(neg_tweet)
 
         test = [['2022-03-24 23:22', 0.187], ['2022-03-24 23:45', -0.673]]
 
-        const chart = Highcharts.chart('container', {
+        const chart = Highcharts.chart('scatter_container', {
             chart: {
                 type: 'scatter',
                 zoomType: 'xy'
@@ -52,16 +55,49 @@
             series: [{
                 name: 'Positive',
                 color: 'rgba(223, 83, 83, .5)',
-                data: '{{posTweets}}'
-            },
-            {
-                name: 'Negative',
-                color: 'rgba(119, 152, 191, .5)',
-                data: '{{negTweets}}'
+                data: test
             }]
         });
     }
 
+    function load_pie() {
+        Highcharts.chart('pie_container', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: 'Sentiment Categories'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            series: [{
+                name: 'Tone',
+                colorByPoint: true,
+                data: [{
+                    name: 'Positive',
+                    y: '{{posTweets}}'.length
+                }, {
+                    name: 'Negative',
+                    y: '{{negTweets}}'.length
+                },
+                {
+                    name: 'Neutral',
+                    y: '{{nerTweet}}'.length
+                }]
+            }]
+        });
+    }
+
+    window.onload = function () {
+        load_pie()
+        load_scatter()
+    }
 </script>
 
 <body>
@@ -74,34 +110,37 @@
         </h1>
         <!-- a dropdown control for cryptocurrency -->
 
-
-
-        {% for tweet in tweetList %}
-        <div class="ui stacked segment">
-            <!-- touch on the color based on the tone -->
-            <!-- if tweet.tone == "Positive" -->
-            <label>{{tweet.date}} </label>
-            <p class="ui">{{tweet.text }}</p>
-            {% if tweet.tone == 'Positive' %}
-            <p class="ui green label">{{tweet.tone}}</p>
-            <p class="ui gray label">{{ tweet.sentiment_score }}</p>
-            {% elif tweet.tone == 'Negative' %}
-            <p class="ui orange label">{{tweet.tone}}</p>
-            <p class="ui gray label">{{ tweet.sentiment_score }}</p>
-            {% else %}
-            <p class="ui grey label">{{tweet.tone}}</p>
-            {% endif %}
+        <div class="ui grid">
+            <div class="eight wide column">
+                {% for tweet in tweetList %}
+                <div class="ui stacked segment">
+                    <!-- touch on the color based on the tone -->
+                    <!-- if tweet.tone == "Positive" -->
+                    <label>{{tweet.date}} </label>
+                    <p class="ui">{{tweet.text }}</p>
+                    {% if tweet.tone == 'Positive' %}
+                    <p class="ui green label">{{tweet.tone}}</p>
+                    <p class="ui gray label">{{ tweet.sentiment_score }}</p>
+                    {% elif tweet.tone == 'Negative' %}
+                    <p class="ui orange label">{{tweet.tone}}</p>
+                    <p class="ui gray label">{{ tweet.sentiment_score }}</p>
+                    {% else %}
+                    <p class="ui grey label">{{tweet.tone}}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="eight wide column">
+                <!-- <h2 class="ui dividing header">Sentiment Plot</h2> -->
+                <!-- <button class="ui primary button" onclick="load_pie()">
+                    Plot Sentiment
+                </button> -->
+                <figure class="highcharts-figure">
+                    <div id="pie_container"></div>
+                    <div id="scatter_container"></div>
+                </figure>
+            </div>
         </div>
-        {% endfor %}
-
-        <h2 class="ui dividing header">Sentiment Plot</h2>
-        <button class="ui primary button" onclick="load_chart()">
-            Plot Sentiment
-        </button>
-        <figure class="highcharts-figure">
-            <div id="container"></div>
-
-        </figure>
 
     </div>
 </body>
