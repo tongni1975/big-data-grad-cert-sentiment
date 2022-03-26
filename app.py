@@ -45,10 +45,18 @@ def home():
     negative_tweets_for_plot = Tweet.query.with_entities(Tweet.date, Tweet.sentiment_score).filter(
         Tweet.date >= past_hour, Tweet.tone == 'Negative').order_by(Tweet.date.desc()).all()
 
-    # print(positive_tweets_for_plot)
     # print(json.dumps(positive_tweets_for_plot))
+    neg = []
+    for tw in negative_tweets_for_plot:
+        neg.append([x for x in tw])  # or simply data.append(list(row))
 
-    return render_template("base.html", tweetList=tweets, posTweets=positive_tweets_for_plot, negTweets=negative_tweets_for_plot)
+    pos = []
+    for tw in positive_tweets_for_plot:
+        pos.append([x for x in tw])  # or simply data.append(list(row))
+
+    print(neg)
+
+    return render_template("base.html", tweetList=tweets, posTweets=pos, negTweets=neg)
 
 
 @app.route("/ping", methods=['POST', 'GET'])
