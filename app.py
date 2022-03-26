@@ -46,7 +46,7 @@ class DoubleTimestamp(db.TypeDecorator):
 class Tweet(db.Model):
     author_id = db.Column(db.String(512))
     text = db.Column(db.String(512), primary_key=True)
-    date = db.Column(TIMESTAMP)
+    date = db.Column(AlcDateTime)
     sentiment_score = db.Column(db.Float())
     subjectivity = db.Column(db.Float())
     tone = db.Column(db.String(8))

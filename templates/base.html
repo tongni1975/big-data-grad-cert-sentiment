@@ -98,6 +98,14 @@
         load_pie()
         load_scatter()
     }
+
+    function reload() {
+        location.reload()
+    }
+
+    setInterval(function () {
+        reload() // this will run after every 5 seconds
+    }, 30000);
 </script>
 
 <body>
@@ -105,7 +113,7 @@
         <h1 class="ui center aligned header">
             <i class="fa-brands fa-bitcoin fa-spin"></i>
             <div class='content'>To the moon
-                <div class="sub header">a sentiment analysis on sns</div>
+                <div class="sub header">a sentiment analysis on realtime sns data</div>
             </div>
         </h1>
         <!-- a dropdown control for cryptocurrency -->
