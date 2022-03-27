@@ -3,3 +3,5 @@
 
 ### data flow
 tweeter > pyspark (streams + models) > flask 
+
+![Screenshot](arch.png)
