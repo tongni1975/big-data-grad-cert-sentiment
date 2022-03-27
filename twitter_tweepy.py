@@ -78,15 +78,15 @@ def get_tweets_by_date(s_dt):
 
 
 # disable this once data is collected
-while date_begin < date_end:
-    get_tweets_by_date(date_begin)
-    date_begin = date_begin + timedelta(minutes=1)
+# while date_begin < date_end:
+#     get_tweets_by_date(date_begin)
+#     date_begin = date_begin + timedelta(minutes=1)
 
 
-# schedule.every(10).minutes.do(get_tweets)
+schedule.every(10).minutes.do(get_tweets)
 while True:
-    # schedule.run_pending()
-    # schedule.run_all(delay_seconds=10)
+    schedule.run_pending()
+    schedule.run_all(delay_seconds=10)
 
     time.sleep(1)
 
