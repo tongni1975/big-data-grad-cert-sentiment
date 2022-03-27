@@ -19,7 +19,7 @@ bearer_token = 'AAAAAAAAAAAAAAAAAAAAAC4IaAEAAAAAKzkzNlGe4day%2BuuLEDkEnsrk8dk%3D
 client_id = 'cnhHaEZMelozN1RfV3Q0SnkydWs6MTpjaQ'
 client_secret = 'cpNEoHPOep9z_7d4UexItiORHttigWXdK5v7Rwp7RpKlrdAUj9'
 
-#2nd set (Yawen account)
+# 2nd set (Yawen account)
 # consumer_key = '7nuIWjVrUaGnCqukqKT0sSIbX'
 # consumer_secret = 'Ms6FVMvHQkAhdda7S6YCYbN3W07YbfX5BEwQhsFTAxtt4PvRfL'
 # access_token = '1503349395513016321-f5kEm6q7GEeOhqB1D0yb3MJwdZX0KU'
@@ -38,8 +38,8 @@ twc = tw.Client(bearer_token=bearer_token,
 # Define the search term and the date_since date as variables
 search_words = "#bitcoin lang:en"
 #date_begin = datetime.today() - timedelta(days=7)
-date_begin = datetime.fromisoformat("2022-03-22 02:54")
-date_end = datetime.today()
+date_begin = datetime.fromisoformat("2022-03-23 17:49")
+date_end = datetime.fromisoformat("2022-03-26 22:00")
 twitter_fields = ['id', 'text', 'author_id', 'created_at', 'geo']
 
 # Collect tweets
