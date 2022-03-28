@@ -72,18 +72,24 @@
             },
             series: [{
                 name: 'Positive',
-                color: 'rgba(50, 168, 52, .5)',
+                color: 'rgba(44, 217, 28, .8)',
                 data: pos_tweet
             },
             {
                 name: 'Negative',
-                color: 'rgba(168, 109, 50, .5)',
+                marker: {
+                    symbol: 'circle'
+                },
+                color: 'rgba(252, 86, 3, .8)',
                 data: neg_tweet
             }]
         });
     }
 
     function load_pie() {
+        Highcharts.setOptions({
+            colors: ['#6beb34', '#b35b0e', '#77807b']
+        });
         Highcharts.chart('pie_container', {
             chart: {
                 type: 'pie'
