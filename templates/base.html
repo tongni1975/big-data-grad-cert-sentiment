@@ -32,15 +32,17 @@
         for (var i = 0; i < all_tweets_json.length; i++) {
             t = all_tweets_json[i]
 
-            console.log(t[1])
+            console.log(t[0])
+
+            // transform timestamp
+            x = [new Date(t[0]).getTime(), t[1]]
 
             if (t[1] > 0) {
-                console.log("push pos")
-                pos_tweet.push(t)
+                pos_tweet.push(x)
             } else if (t[1] < 0) {
-                neg_tweet.push(t)
+                neg_tweet.push(x)
             } else {
-                neu_tweet.push(t)
+                neu_tweet.push(x)
             }
 
         }
@@ -60,9 +62,11 @@
             },
             xAxis: {
                 type: 'datetime',
-                title: {
-                    enabled: true,
-                    text: 'Timestamp'
+                labels: {
+                    rotation: -45,
+                    formatter: function () {
+                        return Highcharts.dateFormat('%Y/%m/%d %H:%M', this.value);
+                    }
                 }
             },
             yAxis: {
