@@ -1,6 +1,7 @@
+import imp
 from sqlite3 import Timestamp
 from flask import Flask
-from flask import request, jsonify, redirect, render_template, url_for
+from flask import request, jsonify, redirect, render_template, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
 from pytz import timezone
 from sympy import true
@@ -10,7 +11,8 @@ from sqlalchemy.sql import func
 from sqlalchemy.sql.functions import GenericFunction
 from sqlalchemy.types import TIMESTAMP
 import sqlite3
-
+from wordcloud import WordCloud, STOPWORDS
+from io import BytesIO
 
 import json
 
@@ -80,7 +82,7 @@ def home():
     # print(json.dumps(positive_tweets_for_plot))
     neg = []
     for tw in negative_tweets_for_plot:
-        neg.append([x for x in tw])  # or simply data.append(list(row))
+        neg.append([x for x in tw])
 
     pos = []
     for tw in positive_tweets_for_plot:
@@ -113,6 +115,27 @@ def index():
     print(results)
 
     return json.dumps(results)
+
+
+@app.route('/wordcloud')
+def fig():
+    # get past 1 hour tweet texts
+    past_hour = datetime.now() - timedelta(hours=18)
+    tweets = Tweet.query.filter(
+        Tweet.date >= past_hour).order_by(Tweet.date.desc()).with_entities(Tweet.text).all()
+
+    # print(tweets)
+
+    text = ' '.join([str(x) for x in tweets])
+    #[text.join(tw) for tw in tweets]
+
+    print("cloud input - " + text)
+
+    wordcloud = WordCloud().generate(text)
+    img = BytesIO()
+    wordcloud.to_image().save(img, 'PNG')
+    img.seek(0)
+    return send_file(img, mimetype='image/png')
 
 
 @ app.route("/ping", methods=['POST', 'GET'])
