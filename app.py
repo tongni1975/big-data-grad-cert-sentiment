@@ -86,9 +86,6 @@ def home():
 
     pos = []
     for tw in positive_tweets_for_plot:
-        # for ( x in tw){
-        #     fill = time.mktime(t.timetuple())*1000
-        # }
         pos.append([x for x in tw])
 
     ner = []
@@ -103,6 +100,11 @@ def home():
     senti_hc = cursor.fetchall()
 
     return render_template("base.html", tweetList=tweets, posTweets=pos, negTweets=neg, nerTweet=ner, sentiHc=json.dumps(senti_hc))
+
+
+@ app.route("/feed")
+def get_feed():
+    return render_template("feed.html")
 
 
 @ app.route("/index")
@@ -124,18 +126,16 @@ def fig():
     tweets = Tweet.query.filter(
         Tweet.date >= past_hour).order_by(Tweet.date.desc()).with_entities(Tweet.text).all()
 
-    # print(tweets)
+    text = ' '.join([str(x).lower() for x in tweets])
 
-    text = ' '.join([str(x) for x in tweets])
-    #[text.join(tw) for tw in tweets]
+    stopwords = set(STOPWORDS)
+    stopwords.update(["RT", "https"])
 
-    print("cloud input - " + text)
+    wordcloud = WordCloud(background_color="white",
+                          stopwords=stopwords).generate(text)
 
-    wordcloud = WordCloud().generate(text)
-    img = BytesIO()
-    wordcloud.to_image().save(img, 'PNG')
-    img.seek(0)
-    return send_file(img, mimetype='image/png')
+    wordcloud.to_file("wordcloud.png")
+    return send_file("wordcloud.png", mimetype='image/png')
 
 
 @ app.route("/ping", methods=['POST', 'GET'])

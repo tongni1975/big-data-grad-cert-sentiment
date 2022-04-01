@@ -1,0 +1,17 @@
+{% for tweet in tweetList %}
+<div class="ui stacked segment" id="feed_pane">
+    <!-- touch on the color based on the tone -->
+    <!-- if tweet.tone == "Positive" -->
+    <label>{{tweet.date}} </label>
+    <p class="ui">{{tweet.text }}</p>
+    {% if tweet.tone == 'Positive' %}
+    <p class="ui green label">{{tweet.tone}}</p>
+    <p class="ui gray label">{{ tweet.sentiment_score }}</p>
+    {% elif tweet.tone == 'Negative' %}
+    <p class="ui orange label">{{tweet.tone}}</p>
+    <p class="ui gray label">{{ tweet.sentiment_score }}</p>
+    {% else %}
+    <p class="ui grey label">{{tweet.tone}}</p>
+    {% endif %}
+</div>
+{% endfor %}

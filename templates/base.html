@@ -154,9 +154,7 @@
         <div class="ui grid">
             <div class="eight wide column">
                 {% for tweet in tweetList %}
-                <div class="ui stacked segment">
-                    <!-- touch on the color based on the tone -->
-                    <!-- if tweet.tone == "Positive" -->
+                <div class="ui stacked segment" id="feed_pane">
                     <label>{{tweet.date}} </label>
                     <p class="ui">{{tweet.text }}</p>
                     {% if tweet.tone == 'Positive' %}
