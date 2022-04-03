@@ -1,5 +1,4 @@
 import requests
-import threading
 import matplotlib
 import matplotlib.pyplot as plt
 import streamlit as st
@@ -17,11 +16,6 @@ from textblob import TextBlob
 # streamlit
 
 matplotlib.use('Agg')
-
-
-thread = threading.Thread()
-st.script_run_context.add_script_run_ctx(thread)
-# thread.start()
 
 
 def predict(tweet_text):
@@ -121,7 +115,7 @@ twSchema = StructType([StructField('', IntegerType(), True),
                        StructField('geo', StringType(), True)])
 
 tweets = sparkSession.readStream.format("csv").schema(twSchema) \
-    .option("header", True).load("/Users/rayyang/repo/tweets_streaming/input")
+    .option("header", True).load("input")
 
 tweets.isStreaming
 

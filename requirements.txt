@@ -8,3 +8,5 @@ flask_sqlalchemy
 pandas
 matplotlib
 pyspark
+tweepy
+schedule
