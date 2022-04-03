@@ -21,8 +21,8 @@ RUN apt-get update && \
 # ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk/
 # RUN export JAVA_HOME
 
-CMD [ "python", "-m" , "flask", "run", "--host=0.0.0.0"]
+#CMD [ "python", "-m" , "flask", "run", "--host=0.0.0.0"]
 
 RUN chmod a+x run.sh
 
-#CMD ["./run.sh"]
+CMD ["./run.sh"]

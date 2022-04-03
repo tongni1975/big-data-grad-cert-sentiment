@@ -99,7 +99,7 @@ svr_add = "http://127.0.0.1:5000/ping"
 
 
 def ping(msg):
-    print(msg)
+    #print(msg)
     requests.post(svr_add, json=msg)
     #requests.get(svr_add, params=msg)
 
