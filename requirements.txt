@@ -1,4 +1,10 @@
 altair
 streamlit
 wordcloud
-
+textblob
+#sqlite3
+flask
+flask_sqlalchemy
+pandas
+matplotlib
+pyspark

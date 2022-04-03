@@ -1,29 +1,18 @@
 import requests
-from streamlit.script_run_context import add_script_run_ctx
 import threading
-import json
-import seaborn as sns
 import matplotlib
 import matplotlib.pyplot as plt
-import altair as alt
 import streamlit as st
 import random
 import re
-from struct import Struct
-import numpy as np
-import pandas as pd
 #from pandas import StringDtype
-from pyspark import SparkContext, SparkConf
-from pyspark.sql import functions as F
-
-from sqlalchemy import Integer, null
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from textblob import TextBlob
 
-import warnings
-warnings.filterwarnings("ignore")
+# import warnings
+# warnings.filterwarnings("ignore")
 
 # streamlit
 

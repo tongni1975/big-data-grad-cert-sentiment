@@ -1,13 +1,7 @@
-import os
-from unicodedata import name
 import tweepy as tw
 import pandas as pd
-import requests
 import schedule
-import io
-import sys
 import time
-import pickle
 from datetime import datetime, timedelta
 
 

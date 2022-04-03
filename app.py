@@ -1,18 +1,10 @@
-import imp
-from sqlite3 import Timestamp
 from flask import Flask
-from flask import request, jsonify, redirect, render_template, url_for, send_file
+from flask import request, redirect, render_template, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
-from pytz import timezone
-from sympy import true
-import time
 from datetime import datetime, timedelta
-from sqlalchemy.sql import func
 from sqlalchemy.sql.functions import GenericFunction
-from sqlalchemy.types import TIMESTAMP
 import sqlite3
 from wordcloud import WordCloud, STOPWORDS
-from io import BytesIO
 
 import json
 
