@@ -1,3 +1,5 @@
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import nltk
 import requests
 import matplotlib
 import matplotlib.pyplot as plt
@@ -10,10 +12,16 @@ from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from textblob import TextBlob
 
-# import warnings
-# warnings.filterwarnings("ignore")
+import warnings
+warnings.filterwarnings("ignore")
 
-# streamlit
+# vader
+nltk.download("vader_lexicon")
+
+# Import the lexicon
+
+# Create an instance of SentimentIntensityAnalyzer
+sent_analyzer = SentimentIntensityAnalyzer()
 
 matplotlib.use('Agg')
 
@@ -49,7 +57,8 @@ def cleanTxt(text):
 
 def senti_scoring(text):
     # return f'{TextBlob(text).sentiment.polarity:.2f}'
-    return TextBlob(text).sentiment.polarity
+    # return TextBlob(text).sentiment.polarity
+    return sent_analyzer.polarity_scores(text)['compound']
 
 
 def subjectivity_detection(text):
@@ -57,7 +66,8 @@ def subjectivity_detection(text):
 
 
 def map_sentiment(score):
-    return "Positive" if score > 0 else ("Negative" if score < 0 else "Neutral")
+    # return "Positive" if score > 0 else ("Negative" if score < 0 else "Neutral")
+    return "Positive" if score >= 0.05 else ("Negative" if score <= -0.05 else "Neutral")
 
 
 scoring_u = udf(senti_scoring, FloatType())
@@ -99,7 +109,7 @@ svr_add = "http://127.0.0.1:5000/ping"
 
 
 def ping(msg):
-    #print(msg)
+    # print(msg)
     requests.post(svr_add, json=msg)
     #requests.get(svr_add, params=msg)
 

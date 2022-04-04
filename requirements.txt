@@ -10,3 +10,4 @@ matplotlib
 pyspark
 tweepy
 schedule
+nltk
