@@ -94,7 +94,7 @@ def plot_tones(df):
 
 
 sparkSession = SparkSession.builder.appName("bda_rr").config(
-    "spark.driver.bindAddress", "127.0.0.1").getOrCreate()
+    "spark.driver.bindAddress", "localhost").getOrCreate()
 
 
 @udf

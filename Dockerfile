@@ -2,6 +2,8 @@
 
 FROM python:3.8-slim-buster
 
+ENV TZ="Asia/Singapore"
+
 WORKDIR /python-docker
 
 COPY requirements.txt requirements.txt
