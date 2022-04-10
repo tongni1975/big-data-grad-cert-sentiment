@@ -51,7 +51,8 @@ class Tweet(db.Model):
 
 class Price(db.Model):
     current = db.Column(Float, primary_key=True)
-    predict = db.Column(Float, primary_key=True)
+    predict_h = db.Column(Float, primary_key=True)
+    predict_d = db.Column(Float, primary_key=True)
 
 
 class as_utc(GenericFunction):
@@ -98,7 +99,7 @@ def home():
     senti_hc = cursor.fetchall()
 
     # get the predicted price pairs
-    last_price_pair = dbutil.get_last_price("H")
+    last_price_pair = dbutil.get_last_price()
 
     return render_template("base.html", tweetList=tweets, posTweets=pos, negTweets=neg, nerTweet=ner, sentiHc=json.dumps(senti_hc), last_price_pair=last_price_pair)
 
@@ -148,13 +149,14 @@ def update_price():
 
         pair = Price(**price_pair)
 
-        dbutil.persist(pair.current, pair.predict, "H", datetime.now())
+        dbutil.persist(pair.current, pair.predict_h,
+                       pair.predict_d, None, datetime.now())
 
         # return something to avoid warning?
 
     # FOR GET request, read the latest price from db
     elif request.method == "GET":
-        last_price_pair = dbutil.get_last_price("H")
+        last_price_pair = dbutil.get_last_price()
         return render_template("realtime.html", last_price_pair=json.dumps(last_price_pair))
 
 
@@ -194,4 +196,4 @@ def create_tweets_db():
 if __name__ == "__main__":
     db.create_all()
     create_tweets_db()
-    app.run(debug=False)
+    app.run(debug=True)

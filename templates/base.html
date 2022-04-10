@@ -132,7 +132,8 @@
 
         //console.log(price_pair)
         $("div.cur_price").text(price_pair.current)
-        $("div.next_hr_price").text(price_pair.predict)
+        $("div.next_hr_price").text(price_pair.predict_hour)
+        $("div.next_d_price").text(price_pair.predict_day)
     }
 
     window.onload = function () {
@@ -155,23 +156,25 @@
         <h1 class="ui center aligned header">
             <i class="fa-brands fa-bitcoin fa-spin"></i>
             <div class='content'>To the moon
-                <div class="sub header">a sentiment analysis on realtime sns data</div>
+                <div class="sub header">a price analysis with time series and realtime sns data</div>
             </div>
         </h1>
         <!-- a dropdown control for cryptocurrency -->
         <div class="ui warning message" style="text-align: center;">
             <!-- <iframe src="/ticker"> -->
-            <a class="ui label blue">
+
+            <i class="notched circle loading icon"></i>
+            <a class="ui label blue big">
                 Current Price:
                 <div class="detail cur_price"></div>
             </a>
-            <a class="ui label green">
+            <a class="ui label green big">
                 Price (Next Hour):
                 <div class="detail next_hr_price"></div>
             </a>
 
 
-            <a class="ui label olive">
+            <a class="ui label orange big">
                 Price (Next Day):
                 <div class="detail next_d_price"></div>
             </a>

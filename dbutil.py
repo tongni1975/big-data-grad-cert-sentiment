@@ -13,30 +13,28 @@ sqlite_file = 'prediction.sqlite'
 #     date = db.Column(AlcDateTime)
 
 
-def persist(price, price_, typ, time):
+def persist(price, price_h, price_d, price_w, time):
     connection = sqlite3.connect(sqlite_file)
     cursor = connection.cursor()
 
-    values = [price, price_, typ, time]
-    sql = 'INSERT INTO Prediction (cur_price, pred_price, type, date) VALUES(?, ?, ?, ?)'
-
-    print(sql)
+    values = [price, price_h, price_d, price_w, time]
+    sql = 'INSERT INTO Prediction (cur_price, pred_price_hour, pred_price_day, pred_price_week, date) VALUES(?, ?, ?, ?, ?)'
 
     cursor.execute(sql, values)
     connection.commit()
     connection.close()
 
 
-def get_last_price(typ):
+def get_last_price():
     connection = sqlite3.connect(sqlite_file)
     cursor = connection.cursor()
 
-    sql = 'select * from Prediction where type = "{}" limit 1'.format(typ)
+    sql = 'select * from Prediction order by date desc limit 1'
 
     cursor.execute(sql)
 
     data = cursor.fetchone()
-    keys = ["current", "predict", "type", "date"]
+    keys = ["current", "predict_hour", "predict_day", "predict_week", "date"]
 
     #json_data = []
     #json_data.append(dict(zip(keys, data)))
@@ -55,7 +53,7 @@ def open():
     c = conn.cursor()
     # D - day, H - hour, W - week
     conn.execute(
-        "CREATE TABLE IF NOT EXISTS Prediction (cur_price Text, pred_price TEXT, type TEXT CHECK(type IN ('H','D','W') )  , date DATETIME)")
+        "CREATE TABLE IF NOT EXISTS Prediction (cur_price Text, pred_price_hour TEXT, pred_price_day TEXT, pred_price_week TEXT, date DATETIME)")
     # todo  create other 2 tables
     conn.commit()
 
