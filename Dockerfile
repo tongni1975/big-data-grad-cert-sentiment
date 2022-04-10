@@ -9,7 +9,6 @@ WORKDIR /python-docker
 COPY requirements.txt requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . .
 
 # Install Java and set JAVA_HOME
 RUN apt-get update && \
@@ -24,6 +23,8 @@ RUN apt-get update && \
 # RUN export JAVA_HOME
 
 #CMD [ "python", "-m" , "flask", "run", "--host=0.0.0.0"]
+
+COPY . .
 
 RUN chmod a+x run.sh
 

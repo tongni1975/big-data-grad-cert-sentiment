@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.sql.functions import GenericFunction
 import sqlite3
 from wordcloud import WordCloud, STOPWORDS
-
+import dbutil
 import json
 
 app = Flask(__name__)
@@ -128,6 +128,20 @@ def fig():
 
     wordcloud.to_file("wordcloud.png")
     return send_file("wordcloud.png", mimetype='image/png')
+
+
+@ app.route("/ticker", methods=['POST', 'GET'])
+def update_price():
+    # match request.method:
+    if request.method == "POST":
+        # FOR POST request, save the price to db
+        price_pair = request.get_json()
+        dbutil.persist(price_pair.get("current"),
+                       price_pair.get("predict"), "H", datetime.now())
+
+    # FOR GET request, read the latest price from db
+    elif request.method == "GET":
+        dbutil.get_last_price("H")
 
 
 @ app.route("/ping", methods=['POST', 'GET'])
