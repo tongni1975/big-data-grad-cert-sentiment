@@ -66,8 +66,9 @@ def home():
     # past 1 hour tweets
     past_hour = datetime.now() - timedelta(hours=8)
     # print("past hour {}".format(past_hour))
-    tweets = Tweet.query.filter(
-        Tweet.date >= past_hour).order_by(Tweet.date.desc()).all()
+    # tweets = Tweet.query.filter(
+    #     Tweet.date >= past_hour).order_by(Tweet.date.desc()).all()
+    tweets = Tweet.query.order_by(Tweet.date.desc()).limit(20)
 
     positive_tweets_for_plot = Tweet.query.with_entities(Tweet.date, Tweet.sentiment_score).filter(
         Tweet.date >= past_hour, Tweet.tone == 'Positive').order_by(Tweet.date.desc()).all()
@@ -79,18 +80,9 @@ def home():
         Tweet.date >= past_hour, Tweet.tone == 'Neutral').order_by(Tweet.date.desc()).all()
 
     # print(json.dumps(positive_tweets_for_plot))
-    neg = []
-    for tw in negative_tweets_for_plot:
-        neg.append([x for x in tw])
-
-    pos = []
-    for tw in positive_tweets_for_plot:
-        pos.append([x for x in tw])
-
-    ner = []
-    for tw in neutral_tweets_for_plot:
-        ner.append([x for x in tw])
-
+    neg = [list(tw) for tw in negative_tweets_for_plot]
+    pos = [list(tw) for tw in positive_tweets_for_plot]
+    ner = [list(tw) for tw in neutral_tweets_for_plot]
     # print(neg)
     connection = sqlite3.connect("tweets.sqlite")
     cursor = connection.cursor()
