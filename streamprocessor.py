@@ -80,6 +80,8 @@ def predict_sentiment(tw):
     tw = tw.withColumn("subjectivity", subject_u("text"))
     tw = tw.withColumn("tone", tone_u("sentiment_score"))
 
+    # TODO write back to the excel for plotting sentiment chart
+
     return tw
 
 
@@ -109,7 +111,6 @@ svr_add = "http://127.0.0.1:5000/ping"
 
 
 def ping(msg):
-    # print(msg)
     requests.post(svr_add, json=msg)
     #requests.get(svr_add, params=msg)
 
@@ -129,7 +130,6 @@ tweets = sparkSession.readStream.format("csv").schema(twSchema) \
 
 tweets.isStreaming
 
-
 # TBR test local df with streamit
 data = [{"Pos": 11},
         {"Neg": 3},
@@ -138,8 +138,6 @@ data = [{"Pos": 11},
 tempDf = sparkSession.createDataFrame(data)
 # convert spark df to pandas df
 pdDf = tempDf.select("*").toPandas()
-
-st.bar_chart(pdDf)
 
 # define ML pipeline: clean out RT
 tweets = tweets.select("author_id", "text", date_format(
@@ -153,18 +151,11 @@ cleaned_tweets = preprocessing(tweets)
 # we skip the regular text process like tokenization/stop words removal/lemmentation, etc
 # model function
 cur_sentiment = predict_sentiment(cleaned_tweets)
-#cur_sentiment = add_tone(cur_sentiment)
 
 # TODO calculate overall sentiment for past hour by averaging
 # avg_score = senti.groupBy("created_at").agg(
 #     avg(senti.sentiment_score))
 
-
-# visualise with streamit
-st.title("Twitter Sentiment Analytics")
-st.write("""Predict cryptocurrency price movement in tendom with text sentiments""")
-# sidebar
-st.sidebar.subheader('Select Cryptocurrency')
 # output to sink
 # cur_sentiment.writeStream.format("console").outputMode("append").start().awaitTermination()
 # cur_sentiment.writeStream.format("json").option("path", "output").trigger(processingTime='2 seconds').outputMode(

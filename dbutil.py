@@ -1,5 +1,6 @@
 from datetime import datetime
 import sqlite3
+import json
 #from flask_sqlalchemy import SQLAlchemy
 
 
@@ -17,7 +18,7 @@ def persist(price, price_, typ, time):
     cursor = connection.cursor()
 
     values = [price, price_, typ, time]
-    sql = 'INSERT INTO tweets(cur_price, pred_price, type, date) VALUES(?, ?, ?, ?)'
+    sql = 'INSERT INTO Prediction (cur_price, pred_price, type, date) VALUES(?, ?, ?, ?)'
 
     print(sql)
 
@@ -30,13 +31,20 @@ def get_last_price(typ):
     connection = sqlite3.connect(sqlite_file)
     cursor = connection.cursor()
 
-    sql = 'select * from Prediction limit 1'
-
-    print(sql)
+    sql = 'select * from Prediction where type = "{}" limit 1'.format(typ)
 
     cursor.execute(sql)
+
+    data = cursor.fetchone()
+    keys = ["current", "predict", "type", "date"]
+
+    #json_data = []
+    #json_data.append(dict(zip(keys, data)))
+
     connection.commit()
     connection.close()
+
+    return json.dumps(dict(zip(keys, data)))
 
 
 def open():

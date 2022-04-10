@@ -127,9 +127,18 @@
         });
     }
 
+    function load_price() {
+        price_pair = JSON.parse('{{last_price_pair|safe}}')
+
+        //console.log(price_pair)
+        $("div.cur_price").text(price_pair.current)
+        $("div.next_hr_price").text(price_pair.predict)
+    }
+
     window.onload = function () {
         load_pie()
         load_scatter()
+        load_price()
     }
 
     function reload() {
@@ -150,6 +159,24 @@
             </div>
         </h1>
         <!-- a dropdown control for cryptocurrency -->
+        <div class="ui warning message" style="text-align: center;">
+            <!-- <iframe src="/ticker"> -->
+            <a class="ui label blue">
+                Current Price:
+                <div class="detail cur_price"></div>
+            </a>
+            <a class="ui label green">
+                Price (Next Hour):
+                <div class="detail next_hr_price"></div>
+            </a>
+
+
+            <a class="ui label olive">
+                Price (Next Day):
+                <div class="detail next_d_price"></div>
+            </a>
+
+        </div>
 
         <div class="ui grid">
             <div class="eight wide column">

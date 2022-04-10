@@ -11,3 +11,5 @@ pyspark
 tweepy
 schedule
 nltk
+keras
+tensorflow

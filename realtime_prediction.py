@@ -57,13 +57,13 @@ def send_price(c, p):
     price_pair['current'] = np.float64(c)
     price_pair['predict'] = np.float64(p)
 
-    out = json.dumps(price_pair)
+    #out = json.dumps(price_pair)
 
     # print(out)
-    requests.post(ticker_url, json=out)
+    requests.post(ticker_url, json=price_pair)
 
 
-def get_bitcoin_price():
+def get_next_hour_bitcoin_price():
     res = requests.get(bitcoin_price_url)
     cur_price = float(res.json().get("USD"))
     pred_price = predict_nexthour(cur_price)[0][0]
@@ -81,7 +81,7 @@ def persist(x, typ):
     print("todo")
 
 
-schedule.every(10).seconds.do(get_bitcoin_price)
+schedule.every(1).hour.do(get_next_hour_bitcoin_price)
 while True:
     schedule.run_pending()
     schedule.run_all(delay_seconds=10)

@@ -32,8 +32,8 @@ twc = tw.Client(bearer_token=bearer_token,
 # Define the search term and the date_since date as variables
 search_words = "#bitcoin lang:en"
 #date_begin = datetime.today() - timedelta(days=7)
-date_begin = datetime.fromisoformat("2022-04-04 23:59")
-date_end = datetime.fromisoformat("2022-04-05 00:00")
+date_begin = datetime.fromisoformat("2022-04-05 00:00")
+date_end = datetime.fromisoformat("2022-04-08 23:59")
 twitter_fields = ['id', 'text', 'author_id', 'created_at', 'geo']
 
 # Collect tweets
@@ -50,6 +50,7 @@ def get_tweets():
     pd.DataFrame(data=twits, columns=twitter_fields).to_csv(
         'input/{}'.format(name))
     #pd.DataFrame(data=twits, columns=twitter_fields).to_csv('tweets_{}.csv', time.strftime("%Y%m%d-%H%M%S"))
+    print("writing file {}".format(name))
 
 
 def get_tweets_by_date(s_dt):
@@ -71,7 +72,7 @@ def get_tweets_by_date(s_dt):
 # loop query past 7 days tweets @ 1 min interval
 
 
-# # disable this once data is collected
+# disable this once data is collected
 # while date_begin < date_end:
 #     get_tweets_by_date(date_begin)
 #     date_begin = date_begin + timedelta(minutes=1)

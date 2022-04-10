@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request, redirect, render_template, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+from sqlalchemy import Float
 from sqlalchemy.sql.functions import GenericFunction
 import sqlite3
 from wordcloud import WordCloud, STOPWORDS
@@ -48,6 +49,11 @@ class Tweet(db.Model):
     tone = db.Column(db.String(8))
 
 
+class Price(db.Model):
+    current = db.Column(Float, primary_key=True)
+    predict = db.Column(Float, primary_key=True)
+
+
 class as_utc(GenericFunction):
     type = AlcDateTime
     package = "time"
@@ -91,7 +97,10 @@ def home():
         "SELECT date, sentiment_score from tweets")
     senti_hc = cursor.fetchall()
 
-    return render_template("base.html", tweetList=tweets, posTweets=pos, negTweets=neg, nerTweet=ner, sentiHc=json.dumps(senti_hc))
+    # get the predicted price pairs
+    last_price_pair = dbutil.get_last_price("H")
+
+    return render_template("base.html", tweetList=tweets, posTweets=pos, negTweets=neg, nerTweet=ner, sentiHc=json.dumps(senti_hc), last_price_pair=last_price_pair)
 
 
 @ app.route("/feed")
@@ -136,12 +145,17 @@ def update_price():
     if request.method == "POST":
         # FOR POST request, save the price to db
         price_pair = request.get_json()
-        dbutil.persist(price_pair.get("current"),
-                       price_pair.get("predict"), "H", datetime.now())
+
+        pair = Price(**price_pair)
+
+        dbutil.persist(pair.current, pair.predict, "H", datetime.now())
+
+        # return something to avoid warning?
 
     # FOR GET request, read the latest price from db
     elif request.method == "GET":
-        dbutil.get_last_price("H")
+        last_price_pair = dbutil.get_last_price("H")
+        return render_template("realtime.html", last_price_pair=json.dumps(last_price_pair))
 
 
 @ app.route("/ping", methods=['POST', 'GET'])
