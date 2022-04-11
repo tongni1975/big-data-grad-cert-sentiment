@@ -14,13 +14,70 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <!-- highchart for plot -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <!-- <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script> -->
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/data.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
 </head>
 <script>
+    function load_btc() {
+        btc_json = JSON.parse('{{bitcoinPrice|safe}}')
+
+        console.log('{{ hour_sentiments }}\n' + btc_json)
+
+        hr_senti = '{{ hour_sentiments }}'
+        hr_senti_feed = []
+
+        const btc_chart = Highcharts.chart('btc_chart', {
+            title: {
+                text: 'Bitcoin Price vs Sentiment '
+            },
+            // yAxis: {
+            //     labels: {
+            //         formatter: function () {
+            //             return (this.value > 0 ? ' + ' : '') + this.value + '%';
+            //         }
+            //     },
+            //     plotLines: [{
+            //         value: 0,
+            //         width: 2,
+            //         color: 'silver'
+            //     }]
+            // },
+
+            tooltip: {
+                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+                valueDecimals: 2,
+                split: true
+            },
+            xAxis: {
+                type: 'datetime',
+                labels: {
+                    rotation: -45,
+                    formatter: function () {
+                        return Highcharts.dateFormat('%Y/%m/%d %H:%M', this.value);
+                    }
+                }
+            },
+            series: [
+                {
+                    name: 'BTC',
+                    color: 'rgba(36, 124, 212)',
+                    data: btc_json
+                },
+                {
+                    name: 'Sentiment',
+                    color: 'rgba(176, 26, 81)',
+                    data: JSON.parse(hr_senti)
+                }]
+        });
+    }
+
     function load_scatter() {
         // scatter plot | pie or barchart | bitcoin chart?
         all_tweets_json = JSON.parse('{{sentiHc|safe}}')
@@ -32,7 +89,7 @@
         for (var i = 0; i < all_tweets_json.length; i++) {
             t = all_tweets_json[i]
 
-            console.log(t[0])
+            //console.log(t[0])
 
             // transform timestamp
             x = [new Date(t[0]).getTime(), t[1]]
@@ -140,6 +197,7 @@
         load_pie()
         load_scatter()
         load_price()
+        load_btc()
     }
 
     function reload() {
@@ -186,6 +244,7 @@
                                 frameborder="0" border="0"
                                 style="border:0;margin:0;padding:0;line-height:14px;"></iframe></div>
                     </div> -->
+                    <div id="btc_chart"></div>
                 </div>
                 {% for tweet in tweetList %}
                 <div class="ui stacked segment" id="feed_pane">

@@ -1,9 +1,11 @@
 from flask import Flask
 from flask import request, redirect, render_template, url_for, send_file
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy as sa
 from datetime import datetime, timedelta
 from sqlalchemy import Float
 from sqlalchemy.sql.functions import GenericFunction
+from sqlalchemy.sql import functions, func
+
 import sqlite3
 from wordcloud import WordCloud, STOPWORDS
 import dbutil
@@ -13,7 +15,7 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db = sa(app)
 sqlite_file = 'tweets.sqlite'
 
 
@@ -65,6 +67,7 @@ class as_utc(GenericFunction):
 def home():
     # past 1 hour tweets
     past_hour = datetime.now() - timedelta(hours=8)
+    past_month = datetime.now() - timedelta(days=30)
     # print("past hour {}".format(past_hour))
     # tweets = Tweet.query.filter(
     #     Tweet.date >= past_hour).order_by(Tweet.date.desc()).all()
@@ -79,21 +82,34 @@ def home():
     neutral_tweets_for_plot = Tweet.query.with_entities(Tweet.date, Tweet.sentiment_score).filter(
         Tweet.date >= past_hour, Tweet.tone == 'Neutral').order_by(Tweet.date.desc()).all()
 
+    hour_tweets_sentiment = db.session.query(Tweet.date, functions.sum(Tweet.sentiment_score)).group_by(
+        func.strftime("%Y-%m-%d %H", Tweet.date)).all()
+
     # print(json.dumps(positive_tweets_for_plot))
     neg = [list(tw) for tw in negative_tweets_for_plot]
     pos = [list(tw) for tw in positive_tweets_for_plot]
     ner = [list(tw) for tw in neutral_tweets_for_plot]
-    # print(neg)
+
+    #hour_sentiment = [list(senti) for senti in hour_tweets_sentiment]
+    hr_senti = [[senti[0].timestamp()*1000, senti[1] * 4000]
+                for senti in hour_tweets_sentiment]
+
     connection = sqlite3.connect("tweets.sqlite")
     cursor = connection.cursor()
-    cursor.execute(
-        "SELECT date, sentiment_score from tweets")
+    cursor.execute("SELECT date, sentiment_score from tweets")
     senti_hc = cursor.fetchall()
+
+    # fetch bitcoin hour data
+    connection = sqlite3.connect("crypto_price.sqlite")
+    cursor = connection.cursor()
+    cursor.execute("SELECT unix, close from btc order by unix desc limit(500)")
+    bitcoin_price = cursor.fetchall()
 
     # get the predicted price pairs
     last_price_pair = dbutil.get_last_price()
 
-    return render_template("base.html", tweetList=tweets, posTweets=pos, negTweets=neg, nerTweet=ner, sentiHc=json.dumps(senti_hc), last_price_pair=last_price_pair)
+    return render_template("base.html", tweetList=tweets, posTweets=pos, negTweets=neg, nerTweet=ner, bitcoinPrice=json.dumps(bitcoin_price),
+                           sentiHc=json.dumps(senti_hc), hour_sentiments=hr_senti, last_price_pair=last_price_pair)
 
 
 @ app.route("/feed")
@@ -134,6 +150,7 @@ def fig():
 
 @ app.route("/ticker", methods=['POST', 'GET'])
 def update_price():
+    dbutil.import_csv()
     # match request.method:
     if request.method == "POST":
         # FOR POST request, save the price to db

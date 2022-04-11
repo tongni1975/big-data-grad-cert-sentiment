@@ -27,8 +27,7 @@ def predict_nexthour(data):
 
     yhat = model.predict(data)
 
-    yhat_inverse = scaler.inverse_transform(yhat.reshape(-1, 1))
-    return yhat_inverse
+    return scaler.inverse_transform(yhat.reshape(-1, 1))
 
 
 def predict_nextday(data):
@@ -46,21 +45,17 @@ def predict_nextday(data):
 
     yhat = model.predict(data)
 
-    yhat_inverse = scaler.inverse_transform(yhat.reshape(-1, 1))
-    return yhat_inverse
+    return scaler.inverse_transform(yhat.reshape(-1, 1))
 
 
 def get_next_hour_bitcoin_price(c):
-    pred_price = predict_nexthour(c)[0][0]
     #print("cur_price: {} pred_price: {}".format(cur_price, pred_price))
 
-    return pred_price
+    return predict_nexthour(c)[0][0]
 
 
 def get_next_day_bitcoin_price(c):
-    pred_price = predict_nextday(c)[0][0]
-
-    return pred_price
+    return predict_nextday(c)[0][0]
 
 
 def send_price():
