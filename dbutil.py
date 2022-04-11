@@ -1,10 +1,13 @@
 from datetime import datetime
 import sqlite3
 import json
+import pandas as pd
 #from flask_sqlalchemy import SQLAlchemy
 
 
 sqlite_file = 'prediction.sqlite'
+bitcoin_file = 'crypto_price.sqlite'
+bitcoin_csv = "Binance_ETHUSDT_1h.csv"
 
 
 # class Price(db.Model):
@@ -43,6 +46,13 @@ def get_last_price():
     connection.close()
 
     return json.dumps(dict(zip(keys, data)))
+
+
+def import_csv():
+    connection = sqlite3.connect(bitcoin_file)
+
+    pd.read_csv(bitcoin_csv).to_sql(
+        "etherum", connection, if_exists='append', index=False)
 
 
 def open():
