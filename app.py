@@ -82,7 +82,7 @@ def home():
     neutral_tweets_for_plot = Tweet.query.with_entities(Tweet.date, Tweet.sentiment_score).filter(
         Tweet.date >= past_hour, Tweet.tone == 'Neutral').order_by(Tweet.date.desc()).all()
 
-    hour_tweets_sentiment = db.session.query(Tweet.date, functions.sum(Tweet.sentiment_score)).group_by(
+    hour_tweets_sentiment = db.session.query(Tweet.date, functions.sum(Tweet.sentiment_score)/24 * 40000).group_by(
         func.strftime("%Y-%m-%d %H", Tweet.date)).all()
 
     # print(json.dumps(positive_tweets_for_plot))
@@ -91,7 +91,7 @@ def home():
     ner = [list(tw) for tw in neutral_tweets_for_plot]
 
     #hour_sentiment = [list(senti) for senti in hour_tweets_sentiment]
-    hr_senti = [[senti[0].timestamp()*1000, senti[1] * 4000]
+    hr_senti = [[senti[0].timestamp()*1000, senti[1]]
                 for senti in hour_tweets_sentiment]
 
     connection = sqlite3.connect("tweets.sqlite")
