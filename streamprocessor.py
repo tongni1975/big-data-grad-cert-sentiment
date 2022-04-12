@@ -29,7 +29,7 @@ matplotlib.use('Agg')
 def predict(tweet_text):
     # a line code to predict
     print(tweet_text.text)
-    print("score: {}".format(random.random()))
+    print(f"score: {random.random()}")
 
 
 httpRegex = "@\S+|https?:\S+|http?:\S|[^A-Za-z0-9]+"
@@ -94,17 +94,9 @@ def plot_tones(df):
     df["tone"].value_counts().plot(kind='bar')
     plt.show()
 
-
-sparkSession = SparkSession.builder.appName("bda_rr").config(
-    "spark.driver.bindAddress", "localhost").getOrCreate()
-
-
 @udf
 def calc_move(df):
-    # movement = sparkSession.sql("select tone from {} limit 1".format(df)
-    move = df.select("tone").limit(1)
-
-    return move
+    return df.select("tone").limit(1)
 
 
 svr_add = "http://127.0.0.1:5000/ping"
@@ -124,7 +116,9 @@ twSchema = StructType([StructField('', IntegerType(), True),
                        StructField('author_id', StringType(), True),
                        StructField('created_at', TimestampType(), True),
                        StructField('geo', StringType(), True)])
-
+                       
+sparkSession = SparkSession.builder.appName("bda_rr").config(
+    "spark.driver.bindAddress", "localhost").getOrCreate()
 tweets = sparkSession.readStream.format("csv").schema(twSchema) \
     .option("header", True).load("input")
 

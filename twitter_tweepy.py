@@ -47,10 +47,9 @@ def get_tweets():
 
     # output to file name
     name = time.strftime('tweets_%d%m%Y_%H_%M.csv')
-    pd.DataFrame(data=twits, columns=twitter_fields).to_csv(
-        'input/{}'.format(name))
+    pd.DataFrame(data=twits, columns=twitter_fields).to_csv(f'input/{name}')
     #pd.DataFrame(data=twits, columns=twitter_fields).to_csv('tweets_{}.csv', time.strftime("%Y%m%d-%H%M%S"))
-    print("writing file {}".format(name))
+    print(f"writing file {name}")
 
 
 def get_tweets_by_date(s_dt):
@@ -64,7 +63,7 @@ def get_tweets_by_date(s_dt):
     # output to file name
     name = s_dt.strftime('tweets_%d%m%Y_%H_%M.csv')
     pd.DataFrame(data=twits, columns=twitter_fields).to_csv(
-        'input/past_7/{}'.format(name))
+        f'input/past_7/{name}')
     #pd.DataFrame(data=twits, columns=twitter_fields).to_csv('tweets_{}.csv', time.strftime("%Y%m%d-%H%M%S"))
 
 # with monthly quota of 500,000, for every min we can pull about 50 tweets

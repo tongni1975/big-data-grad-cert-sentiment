@@ -210,7 +210,7 @@
 </script>
 
 <body>
-    <div class="ui top fixed menu" style="padding: 15px;">
+    <div class="ui top fixed menu inverted" style="padding: 15px;">
         <i class="fa-brands fa-bitcoin loading huge"></i>
         <a class="item" style="font-size: 18;">Tothe Mooooon</a>
 
@@ -248,7 +248,7 @@
                 </div>
                 {% for tweet in tweetList %}
                 <div class="ui stacked segment" id="feed_pane">
-                    <label>{{tweet.date}} </label>
+                    <label class="ui top left attached label">{{tweet.date}} </label>
                     <p class="ui">{{tweet.text }}</p>
                     {% if tweet.tone == 'Positive' %}
                     <p class="ui green label">{{tweet.tone}}</p>
