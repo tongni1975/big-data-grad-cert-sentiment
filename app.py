@@ -67,7 +67,7 @@ class as_utc(GenericFunction):
 def home():
     # past 1 hour tweets
     past_hour = datetime.now() - timedelta(hours=8)
-    past_month = datetime.now() - timedelta(days=20)
+    past_month = datetime.now() - timedelta(days=14)
     # print("past hour {}".format(past_hour))
     # tweets = Tweet.query.filter(
     #     Tweet.date >= past_hour).order_by(Tweet.date.desc()).all()
@@ -83,7 +83,7 @@ def home():
         Tweet.date >= past_hour, Tweet.tone == 'Neutral').order_by(Tweet.date.desc()).all()
 
     hour_tweets_sentiment = db.session.query(Tweet.date, functions.sum(
-        Tweet.sentiment_score)/24 * 40000).filter(Tweet.date >= past_month).group_by(func.strftime("%Y-%m-%d %H", Tweet.date)).all()
+        Tweet.sentiment_score)/functions.count(Tweet.author_id)).filter(Tweet.date >= past_month).group_by(func.strftime("%Y-%m-%d %H", Tweet.date)).all()
 
     # print(json.dumps(positive_tweets_for_plot))
     neg = [list(tw) for tw in negative_tweets_for_plot]
@@ -104,8 +104,9 @@ def home():
     # fetch bitcoin hour data
     connection = sqlite3.connect("crypto_price.sqlite")
     cursor = connection.cursor()
-    # 480 -> 20 days of data -> 03/22
-    cursor.execute("SELECT distinct unix, close from btc order by unix desc limit(480)")
+    # past 14 days
+    cursor.execute(
+        "SELECT distinct unix, close from btc order by unix desc limit(336)")
     bitcoin_price = cursor.fetchall()
 
     connection.close()
@@ -155,7 +156,7 @@ def fig():
 
 @ app.route("/ticker", methods=['POST', 'GET'])
 def update_price():
-    dbutil.import_csv()
+    dbutil.count()
     # match request.method:
     if request.method == "POST":
         # FOR POST request, save the price to db

@@ -3,7 +3,7 @@ import nltk
 import requests
 import matplotlib
 import matplotlib.pyplot as plt
-import streamlit as st
+#import streamlit as st
 import random
 import re
 #from pandas import StringDtype
@@ -24,13 +24,6 @@ nltk.download("vader_lexicon")
 sent_analyzer = SentimentIntensityAnalyzer()
 
 matplotlib.use('Agg')
-
-
-def predict(tweet_text):
-    # a line code to predict
-    print(tweet_text.text)
-    print(f"score: {random.random()}")
-
 
 httpRegex = "@\S+|https?:\S+|http?:\S|[^A-Za-z0-9]+"
 
@@ -94,6 +87,7 @@ def plot_tones(df):
     df["tone"].value_counts().plot(kind='bar')
     plt.show()
 
+
 @udf
 def calc_move(df):
     return df.select("tone").limit(1)
@@ -103,6 +97,7 @@ svr_add = "http://127.0.0.1:5000/ping"
 
 
 def ping(msg):
+    print(f"- {msg}")
     requests.post(svr_add, json=msg)
     #requests.get(svr_add, params=msg)
 
@@ -116,7 +111,7 @@ twSchema = StructType([StructField('', IntegerType(), True),
                        StructField('author_id', StringType(), True),
                        StructField('created_at', TimestampType(), True),
                        StructField('geo', StringType(), True)])
-                       
+
 sparkSession = SparkSession.builder.appName("bda_rr").config(
     "spark.driver.bindAddress", "localhost").getOrCreate()
 tweets = sparkSession.readStream.format("csv").schema(twSchema) \

@@ -5,20 +5,20 @@ import time
 from datetime import datetime, timedelta
 
 
-consumer_key = 'uNd6MVlFa8oY3xTJVBYln58TT'
-consumer_secret = '432nI4pvTs7Zdky2r5XFz1dPmK6gY4ICvr6MoI98oHAbq2G25P'
-access_token = '39466086-TL4hXrfnpfnuWNtxMgE98fAyYgZ1sVCz2ptLa9lG4'
-access_token_secret = 'KAzO6WDvRgD3HMN0Tp6YmXI8koxeBxDmh2xxbWjMLwABH'
-bearer_token = 'AAAAAAAAAAAAAAAAAAAAAC4IaAEAAAAAKzkzNlGe4day%2BuuLEDkEnsrk8dk%3D7VWohGI1nWWfSnWvYPlLknlGPRLAdIrUhzUPrCPUohKtCkNDjK'
-client_id = 'cnhHaEZMelozN1RfV3Q0SnkydWs6MTpjaQ'
-client_secret = 'cpNEoHPOep9z_7d4UexItiORHttigWXdK5v7Rwp7RpKlrdAUj9'
+# consumer_key = 'uNd6MVlFa8oY3xTJVBYln58TT'
+# consumer_secret = '432nI4pvTs7Zdky2r5XFz1dPmK6gY4ICvr6MoI98oHAbq2G25P'
+# access_token = '39466086-TL4hXrfnpfnuWNtxMgE98fAyYgZ1sVCz2ptLa9lG4'
+# access_token_secret = 'KAzO6WDvRgD3HMN0Tp6YmXI8koxeBxDmh2xxbWjMLwABH'
+# bearer_token = 'AAAAAAAAAAAAAAAAAAAAAC4IaAEAAAAAKzkzNlGe4day%2BuuLEDkEnsrk8dk%3D7VWohGI1nWWfSnWvYPlLknlGPRLAdIrUhzUPrCPUohKtCkNDjK'
+# client_id = 'cnhHaEZMelozN1RfV3Q0SnkydWs6MTpjaQ'
+# client_secret = 'cpNEoHPOep9z_7d4UexItiORHttigWXdK5v7Rwp7RpKlrdAUj9'
 
 # 2nd set (Yawen account)
-# consumer_key = '7nuIWjVrUaGnCqukqKT0sSIbX'
-# consumer_secret = 'Ms6FVMvHQkAhdda7S6YCYbN3W07YbfX5BEwQhsFTAxtt4PvRfL'
-# access_token = '1503349395513016321-f5kEm6q7GEeOhqB1D0yb3MJwdZX0KU'
-# access_token_secret = 'diLlEu0tgBDKEpwkervI1vKWtUeCe0VewHrgVPbPjcp9t'
-# bearer_token = 'AAAAAAAAAAAAAAAAAAAAADouawEAAAAArdZ3rEKaTVuRB2nS6bcV5%2BV9HMM%3DtGLNcGAe1xkOPIPDNyhO0nJuirDUXX1ZENdTQNs2lzfdYoDJiy'
+consumer_key = '7nuIWjVrUaGnCqukqKT0sSIbX'
+consumer_secret = 'Ms6FVMvHQkAhdda7S6YCYbN3W07YbfX5BEwQhsFTAxtt4PvRfL'
+access_token = '1503349395513016321-f5kEm6q7GEeOhqB1D0yb3MJwdZX0KU'
+access_token_secret = 'diLlEu0tgBDKEpwkervI1vKWtUeCe0VewHrgVPbPjcp9t'
+bearer_token = 'AAAAAAAAAAAAAAAAAAAAADouawEAAAAArdZ3rEKaTVuRB2nS6bcV5%2BV9HMM%3DtGLNcGAe1xkOPIPDNyhO0nJuirDUXX1ZENdTQNs2lzfdYoDJiy'
 
 # v2 api client
 twc = tw.Client(bearer_token=bearer_token,
@@ -32,8 +32,8 @@ twc = tw.Client(bearer_token=bearer_token,
 # Define the search term and the date_since date as variables
 search_words = "#bitcoin lang:en"
 #date_begin = datetime.today() - timedelta(days=7)
-date_begin = datetime.fromisoformat("2022-04-05 00:00")
-date_end = datetime.fromisoformat("2022-04-08 23:59")
+date_begin = datetime.fromisoformat("2022-04-19 00:00")
+date_end = datetime.fromisoformat("2022-04-19 23:59")
 twitter_fields = ['id', 'text', 'author_id', 'created_at', 'geo']
 
 # Collect tweets
@@ -41,7 +41,7 @@ twitter_fields = ['id', 'text', 'author_id', 'created_at', 'geo']
 
 def get_tweets():
     tweets = twc.search_recent_tweets(
-        query=search_words, tweet_fields=twitter_fields, max_results=100)
+        query=search_words, tweet_fields=twitter_fields, max_results=60)
     twits = [[tweet.id, tweet.text, tweet.author_id,
               tweet.created_at, tweet.geo] for tweet in tweets.data]
 
@@ -55,7 +55,7 @@ def get_tweets():
 def get_tweets_by_date(s_dt):
     tweets = twc.search_recent_tweets(
         query=search_words, tweet_fields=twitter_fields,
-        start_time=s_dt, end_time=s_dt + timedelta(minutes=1),  max_results=50)
+        start_time=s_dt, end_time=s_dt + timedelta(minutes=1),  max_results=60)
 
     twits = [[tweet.id, tweet.text, tweet.author_id,
               tweet.created_at, tweet.geo] for tweet in tweets.data]
@@ -74,14 +74,12 @@ def get_tweets_by_date(s_dt):
 # disable this once data is collected
 # while date_begin < date_end:
 #     get_tweets_by_date(date_begin)
-#     date_begin = date_begin + timedelta(minutes=1)
+#     date_begin = date_begin + timedelta(minutes=5)
 
 
-schedule.every(10).minutes.do(get_tweets)
+schedule.every(5).minutes.do(get_tweets)
 while True:
     schedule.run_pending()
-    schedule.run_all(delay_seconds=10)
-
     time.sleep(1)
 
 

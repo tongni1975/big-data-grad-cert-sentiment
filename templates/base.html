@@ -37,18 +37,34 @@
             title: {
                 text: 'Bitcoin Price vs Sentiment '
             },
-            // yAxis: {
-            //     labels: {
-            //         formatter: function () {
-            //             return (this.value > 0 ? ' + ' : '') + this.value + '%';
-            //         }
-            //     },
-            //     plotLines: [{
-            //         value: 0,
-            //         width: 2,
-            //         color: 'silver'
-            //     }]
-            // },
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    format: '{value}',
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                title: {
+                    text: 'Price'
+                    // style: {
+                    //     color: Highcharts.getOptions().colors[1]
+                    // }
+                }
+            }, { // Secondary yAxis
+                title: {
+                    text: 'Sentiment',
+                    style: {
+                        color: Highcharts.getOptions().colors[3]
+                    }
+                },
+                labels: {
+                    format: '{value}'
+                    // style: {
+                    //     color: Highcharts.getOptions().colors[0]
+                    // }
+                },
+                opposite: true
+            }],
 
             tooltip: {
                 pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
@@ -67,6 +83,7 @@
             series: [
                 {
                     name: 'BTC',
+                    yAxis: 1,
                     color: 'rgba(36, 124, 212)',
                     data: btc_json
                 },

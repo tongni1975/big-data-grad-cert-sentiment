@@ -1,5 +1,5 @@
-altair
-streamlit
+#altair
+#streamlit
 wordcloud
 textblob
 #sqlite3

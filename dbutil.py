@@ -48,6 +48,16 @@ def get_last_price():
     return json.dumps(dict(zip(keys, data)))
 
 
+def count():
+    connection = sqlite3.connect("tweets.sqlite")
+    cursor = connection.cursor()
+
+    sql = 'select strftime("%Y-%m-%d %H", date), count(*) from tweets group by strftime("%Y-%m-%d %H", date)'
+
+    cursor.execute(sql)
+    cursor.fetchall()
+
+
 def import_csv():
     connection = sqlite3.connect(bitcoin_file)
 
